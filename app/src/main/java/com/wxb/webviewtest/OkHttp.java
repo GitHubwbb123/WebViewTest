@@ -1,5 +1,7 @@
 package com.wxb.webviewtest;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +16,18 @@ import okhttp3.Response;
 
 public class OkHttp extends AppCompatActivity {
 private TextView textView;
+private Handler handler=new Handler(){
+    @Override
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        switch (msg.what){
+            case 1:
+                ((TextView)findViewById(R.id.textView1)).setText("子线程操作");
+            break;
+
+        }
+    }
+};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +53,9 @@ private TextView textView;
                     Response response = okHttpClient.newCall(request).execute();
                     String responseData=response.body().string();
                     showResponse(responseData);
+                    Message message=new Message();
+                    message.what=1;
+                    handler.sendMessage(message);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -57,4 +74,5 @@ private TextView textView;
 
 
     }
+
 }
